@@ -3,35 +3,61 @@ package com.mlb.mlb_api.controllers;
 
 import com.mlb.mlb_api.entities.Player;
 import com.mlb.mlb_api.repositories.PlayerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/player")
 public class PlayerController {
 
-    @Autowired
-    private final PlayerRepository playerRepository;
 
+    private final PlayerRepository playerRepository;
 
     public PlayerController(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 
-
-    @PostMapping("/addPlayer")
-    public Player createPlayer(@RequestBody Player player){
-        return playerRepository.save(player);
-    }
-
-    @GetMapping("/all")
-    public Iterable<Player> getAllPlayers(){
-        return playerRepository.findAll();
+    @PostMapping("/add")
+    public Player createPlayer(@RequestBody Player newPlayer){
+        return playerRepository.save(newPlayer);
     }
 
     @GetMapping
-    public Player getPlayerByName(@RequestParam String name, @RequestParam Integer age){
-       return playerRepository.findByNameAndAge(name, age);
+    public Iterable<Player> getPlayer(){
+        return playerRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Player getPlayerById(@PathVariable("id") Integer playerId){
+        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
+        if(optionalPlayer.isEmpty()){
+            return null;
+        }
+        Player player = optionalPlayer.get();
+        return player;
+    }
+
+    @PutMapping
+    public Player updatePlayer(@RequestBody Player incomingPlayer){
+//        find the player to update
+        Player playerFromDb = getPlayerById(incomingPlayer.getId());
+
+//        update the players information
+        if(incomingPlayer.getName() == null){
+            playerFromDb.setName(playerFromDb.getName());
+        } else if(incomingPlayer.getName().isEmpty()) {
+            playerFromDb.setName(playerFromDb.getName());
+        } else {
+            playerFromDb.setName(incomingPlayer.getName());
+        }
+
+        playerFromDb.setAge(incomingPlayer.getAge() != null && incomingPlayer.getAge() > 18 ? incomingPlayer.getAge() : playerFromDb.getAge());
+        playerFromDb.setRating(incomingPlayer.getRating() != null ? incomingPlayer.getRating() : playerFromDb.getRating());
+        playerFromDb.setYearsOfExperience(incomingPlayer.getYearsOfExperience() != null ? incomingPlayer.getYearsOfExperience() : playerFromDb.getYearsOfExperience());
+//        save the player back to the DB
+//        return the player to the client
+        return playerRepository.save(playerFromDb);
     }
 
 }
