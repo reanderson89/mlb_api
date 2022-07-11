@@ -12,15 +12,18 @@ public class Player {
     private String name;
     private Integer age;
     @Column(name = "years_of_experience")
-    private Integer yearsOfExperience;
+    private Double yearsOfExperience;
+    private Double rating;
+
 
     public Player() {
     }
 
-    public Player(String name, Integer age, Integer yearsOfExperience) {
+    public Player(String name, Integer age, Double yearsOfExperience, Double rating) {
         this.name = name;
         this.age = age;
         this.yearsOfExperience = yearsOfExperience;
+        this.rating = rating;
     }
 
     public Integer getId() {
@@ -47,11 +50,19 @@ public class Player {
         this.age = age;
     }
 
-    public Integer getYearsOfExperience() {
+    public Double getYearsOfExperience() {
         return yearsOfExperience;
     }
 
-    public void setYearsOfExperience(Integer yearsOfExperience) {
+    public void setYearsOfExperience(Double yearsOfExperience) {
         this.yearsOfExperience = yearsOfExperience;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 }

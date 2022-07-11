@@ -3,35 +3,40 @@ package com.mlb.mlb_api.controllers;
 
 import com.mlb.mlb_api.entities.Player;
 import com.mlb.mlb_api.repositories.PlayerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/player")
 public class PlayerController {
 
-    @Autowired
-    private final PlayerRepository playerRepository;
 
+    private final PlayerRepository playerRepository;
 
     public PlayerController(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 
 
-    @PostMapping("/addPlayer")
+    @PostMapping("/add")
     public Player createPlayer(@RequestBody Player player){
         return playerRepository.save(player);
     }
 
-    @GetMapping("/all")
-    public Iterable<Player> getAllPlayers(){
+    @GetMapping
+    public Iterable<Player> getPlayer(){
         return playerRepository.findAll();
     }
 
-    @GetMapping
-    public Player getPlayerByName(@RequestParam String name, @RequestParam Integer age){
-       return playerRepository.findByNameAndAge(name, age);
+    @GetMapping("/{id}")
+    public Player getPlayerById(@PathVariable("id") Integer playerId){
+        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
+        if(optionalPlayer.isEmpty()){
+            return null;
+        }
+        Player player = optionalPlayer.get();
+        return player;
     }
 
 }
