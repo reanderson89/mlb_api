@@ -65,4 +65,15 @@ public class Player {
     public void setRating(Double rating) {
         this.rating = rating;
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", yearsOfExperience=" + yearsOfExperience +
+                ", rating=" + rating +
+                '}';
+    }
 }

@@ -18,10 +18,9 @@ public class PlayerController {
         this.playerRepository = playerRepository;
     }
 
-
     @PostMapping("/add")
-    public Player createPlayer(@RequestBody Player player){
-        return playerRepository.save(player);
+    public Player createPlayer(@RequestBody Player newPlayer){
+        return playerRepository.save(newPlayer);
     }
 
     @GetMapping
@@ -37,6 +36,28 @@ public class PlayerController {
         }
         Player player = optionalPlayer.get();
         return player;
+    }
+
+    @PutMapping
+    public Player updatePlayer(@RequestBody Player incomingPlayer){
+//        find the player to update
+        Player playerFromDb = getPlayerById(incomingPlayer.getId());
+
+//        update the players information
+        if(incomingPlayer.getName() == null){
+            playerFromDb.setName(playerFromDb.getName());
+        } else if(incomingPlayer.getName().isEmpty()) {
+            playerFromDb.setName(playerFromDb.getName());
+        } else {
+            playerFromDb.setName(incomingPlayer.getName());
+        }
+
+        playerFromDb.setAge(incomingPlayer.getAge() != null && incomingPlayer.getAge() > 18 ? incomingPlayer.getAge() : playerFromDb.getAge());
+        playerFromDb.setRating(incomingPlayer.getRating() != null ? incomingPlayer.getRating() : playerFromDb.getRating());
+        playerFromDb.setYearsOfExperience(incomingPlayer.getYearsOfExperience() != null ? incomingPlayer.getYearsOfExperience() : playerFromDb.getYearsOfExperience());
+//        save the player back to the DB
+//        return the player to the client
+        return playerRepository.save(playerFromDb);
     }
 
 }
